@@ -1,0 +1,31 @@
+- name: Download GoBGP tar file
+  get_url:
+    url: https://github.com/osrg/gobgp/releases/download/v3.30.0/gobgp_3.30.0_linux_amd64.tar.gz
+    dest: /tmp/gobgp_3.30.0_linux_amd64.tar.gz
+
+- name: Extract GoBGP to /usr/local/bin
+  unarchive:
+    src: /tmp/gobgp_3.30.0_linux_amd64.tar.gz
+    dest: /usr/local/bin
+    remote_src: yes
+
+- name: Ensure gobgpd configuration directory exists
+  file:
+    path: /etc/gobgp
+    state: directory
+
+- name: Generate gobgpd.conf
+  template:
+    src: gobgpd.yaml.j2
+    dest: /etc/gobgp/gobgpd.yaml
+
+- name: Copying gobgp daemon file
+  copy:
+    src: gobgpd.service
+    dest: /etc/systemd/system/
+
+- name: Start service httpd, if not started
+  ansible.builtin.service:
+    name: gobgpd
+    state: started
+    enabled: true

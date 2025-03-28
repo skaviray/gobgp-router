@@ -1,0 +1,8 @@
+[routers]
+10.232.189.209 ansible_ssh_user=kcs-user ansible_ssh_pass='kcs@pass' ansible_ssh_extra_args='-o StrictHostKeyChecking=no' ansible_become_password='1234' local_as=65540
+10.232.189.32 ansible_ssh_user=kcs-user ansible_ssh_pass='kcs@pass' ansible_ssh_extra_args='-o StrictHostKeyChecking=no' ansible_become_password='1234' local_as=65540
+
+[all:vars]
+remote_as=65532
+peer_group=colo2_spine
+neighbors=["10.232.80.2", "10.232.80.3"]

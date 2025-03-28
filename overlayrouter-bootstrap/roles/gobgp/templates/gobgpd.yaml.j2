@@ -1,0 +1,23 @@
+global:
+  config:
+    as: {{ local_as }}
+    router-id: {{ ansible_default_ipv4.address }}
+
+peer-groups:
+  - config:
+      peer-group-name: "colo2_spine"
+      peer-as: {{ remote_as }}
+
+neighbors:
+{% for neighbor in neighbors %}
+  - config:
+      neighbor-address: "{{ neighbor }}"
+      peer-group: "colo2_spine"
+{% endfor %}
+
+zebra:
+  config:
+    enabled: true
+    url: "unix:/var/run/frr/zserv.api"
+    redistribute-route-type-list: []
+    version: 6

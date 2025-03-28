@@ -1,0 +1,12 @@
+[Unit]
+Description=GoBGP Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/gobgpd -f /etc/gobgp/gobgpd.yaml
+StandardOutput=append:/var/log/gobgp.log
+StandardError=append:/var/log/gobgp.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

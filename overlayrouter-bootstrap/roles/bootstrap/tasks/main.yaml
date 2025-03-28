@@ -1,0 +1,168 @@
+- name: Install required packages
+  apt:
+    name:
+      - git
+      - autoconf
+      - automake
+      - libtool
+      - make
+      - cmake
+      - libpcre3-dev
+      - libreadline-dev
+      - texinfo
+      - pkg-config
+      - libpam0g-dev
+      - libjson-c-dev
+      - bison
+      - flex
+      - libc-ares-dev
+      - python3
+      # - python3-ipaddress
+      - python3-sphinx
+      - libsnmp-dev
+      - perl
+      - libcap-dev
+      - libelf-dev
+      - libunwind-dev
+      - protobuf-c-compiler
+      - libpcre2-dev
+      - python3-pytest
+      - python3-dev
+      - bash-completion
+    state: present
+    update_cache: yes
+
+- name: Clone libyang repository
+  git:
+    repo: https://github.com/CESNET/libyang.git
+    dest: /tmp/libyang
+    version: v2.1.128
+
+- name: Build and install libyang
+  shell: |
+    mkdir -p /tmp/libyang/build
+    cd /tmp/libyang/build
+    cmake --install-prefix /usr -D CMAKE_BUILD_TYPE:String="Release" ..
+    make && make install
+  args:
+    chdir: /tmp/libyang
+
+- name: Create FRR groups
+  group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid }}"
+    system: yes
+  loop:
+    - { name: "frr", gid: 92 }
+    - { name: "frrvty", gid: 85 }
+
+- name: Create FRR user
+  user:
+    name: frr
+    comment: "FRR suite"
+    shell: /sbin/nologin
+    home: /var/run/frr
+    group: frr
+    system: yes
+    append: yes
+    groups: frrvty
+
+- name: Clone FRR repository
+  git:
+    repo: https://github.com/FRRouting/frr.git
+    dest: /tmp/frr
+    version: stable/8.1
+
+- name: Build and install FRR
+  shell: |
+    ./bootstrap.sh
+    ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --sbindir=/usr/lib/frr \
+      --disable-ripd --disable-ripngd --disable-ospfd --disable-ospf6d --disable-bgpd --disable-ldpd \
+      --disable-nhrpd --disable-eigrpd --disable-babeld --disable-bgp-bmp --disable-bgp-vnc \
+      --disable-ospfapi --disable-ospfclient --disable-isisd --disable-fabricd --enable-realms \
+      --sysconfdir=/etc/frr --enable-user=frr --enable-group=frr --enable-vty-group=frrvty \
+      --enable-configfile-mask=0640 --enable-logfile-mask=0640 --localstatedir=/var/run/frr
+    make && make install
+  args:
+    chdir: /tmp/frr
+
+- name: Create FRR directories
+  file:
+    path: "{{ item.path }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+    state: directory
+  loop:
+    - { path: "/var/log/frr", owner: "frr", group: "frr", mode: "0775" }
+    - { path: "/etc/frr", owner: "frr", group: "frrvty", mode: "0775" }
+
+- name: Install FRR configuration files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+    remote_src: yes
+  loop:
+    - { src: "/tmp/frr/tools/etc/frr/vtysh.conf", dest: "/etc/frr/vtysh.conf", owner: "frr", group: "frrvty", mode: "0640" }
+    - { src: "/tmp/frr/tools/etc/frr/frr.conf", dest: "/etc/frr/frr.conf", owner: "frr", group: "frr", mode: "0640" }
+    - { src: "/tmp/frr/tools/etc/frr/daemons.conf", dest: "/etc/frr/daemons.conf", owner: "frr", group: "frr", mode: "0640" }
+    - { src: "/tmp/frr/tools/etc/frr/daemons", dest: "/etc/frr/daemons", owner: "frr", group: "frr", mode: "0640" }
+
+
+- name: Install FRR systemd service file
+  copy:
+    src: "/tmp/frr/tools/frr.service"
+    dest: "/etc/systemd/system/frr.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    remote_src: yes
+
+- name: Ensure /var/run/frr has correct ownership
+  ansible.builtin.file:
+    path: /var/run/frr
+    owner: frr
+    group: frr
+    state: directory
+    recurse: yes
+
+- name: Enable FRR service
+  systemd:
+    name: frr
+    enabled: yes
+
+- name: Download GoBGP tar file
+  get_url:
+    url: https://github.com/osrg/gobgp/releases/download/v3.30.0/gobgp_3.30.0_linux_amd64.tar.gz
+    dest: /tmp/gobgp_3.30.0_linux_amd64.tar.gz
+
+- name: Extract GoBGP to /usr/local/bin
+  unarchive:
+    src: /tmp/gobgp_3.30.0_linux_amd64.tar.gz
+    dest: /usr/local/bin
+    remote_src: yes
+
+- name: Enable IP forwarding temporarily
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+
+- name: Enable IP forwarding permanently
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^net.ipv4.ip_forward'
+    line: 'net.ipv4.ip_forward = 1'
+    state: present
+
+- name: Apply sysctl settings
+  command: sysctl -p
+
+- name: Start service httpd, if not started
+  ansible.builtin.service:
+    name: frr
+    state: started
+    enabled: true
