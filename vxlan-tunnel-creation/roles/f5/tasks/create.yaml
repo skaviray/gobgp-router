@@ -1,0 +1,100 @@
+- name: Create vxlan tunnel
+  bigip_tunnel:
+    name: "vxlan_tunnel_{{ tunnels[item]['vxlan_tag'] }}"
+    local_address: "{{ tunnels[item]['f5_member_self_ip'] }}"
+    key: "{{ tunnels[item]['vxlan_tag'] | int }}"
+    profile: "vxlan-multipoint"
+    mtu: 8950
+    use_pmtu: true
+    tos: preserve
+    auto_last_hop: default
+    traffic_group: traffic-group-local-only
+    state: present
+    provider:
+      password: "{{ bigip_password }}"
+      server: "{{ tunnels[item]['f5_api_ip'] }}"
+      user: "{{ bigip_user }}"
+      validate_certs: false
+  with_items: "{{ tunnels }}"
+  delegate_to: localhost
+
+# - name: Create Fdb entries
+#   bigip_command:
+#     commands:
+#      - tmsh create net fdb tunnel vxlan_tunnel_{{ tunnels[item]['vxlan_tag'] }} static-mac {{ tunnels[item]['router_mac'] }}  forwarding {{ tunnels[item]['router_ip'] }} 
+#     provider:
+#       password: "{{ bigip_password }}"
+#       server: "{{ tunnels[item]['f5_api_ip'] }}"
+#       user: "{{ bigip_user }}"
+#       validate_certs: false
+#   with_items: "{{ tunnels }}"
+#   delegate_to: localhost
+
+- name: Create Self IP
+  bigip_selfip:
+    state: present
+    allow_service:
+      - all
+    address: "{{ tunnels[item]['f5_vtep_ip'] | ipaddr('address') }}"
+    name: "vxlan_tunnel_{{ tunnels[item]['vxlan_tag'] }}_self_ip"
+    netmask: "{{ tunnels[item]['f5_vtep_ip'] | ipaddr('netmask') }}"
+    vlan: "vxlan_tunnel_{{ tunnels[item]['vxlan_tag'] }}"
+    provider:
+      password: "{{ bigip_password }}"
+      server: "{{ tunnels[item]['f5_api_ip'] }}"
+      user: "{{ bigip_user }}"
+      validate_certs: false
+  with_items: "{{ tunnels }}"
+  delegate_to: localhost
+
+
+# - name: Change the SNAT pool's members to a single member
+#   bigip_snat_pool:
+#     name: VXLAN_Pool
+#     state: present
+#     member: "{{ tunnels[item]['f5_vtep_ip'] | ipaddr('address') }}"
+#     provider:
+#       password: "{{ bigip_password }}"
+#       server: "{{ tunnels[item]['f5_api_ip'] }}"
+#       user: "{{ bigip_user }}"
+#       validate_certs: false
+#   with_items: "{{ tunnels }}"
+#   delegate_to: localhost
+
+# - debug: msg="{{ tunnels[item]['f5_api_ip'] }}, {{ tunnels[item]['f5_vtep_ip'] | ipaddr('address') }}"
+#   with_items: "{{ tunnels }}"
+
+- name: Add config to a parent block
+  bigip_imish_config:
+    lines:
+      # - bgp graceful-restart restart-time 120
+      # - redistribute kernel route-map rhi
+      - neighbor {{ tunnels[item]['router_vtep'] | ipaddr('address')}} remote-as {{ tunnels[item]['router_as'] }}
+      - neighbor {{ tunnels[item]['router_vtep'] | ipaddr('address')}} activate
+    parents: router bgp {{ tunnels[item]['f5_as'] }}
+    match: exact
+    provider:
+      password: "{{ bigip_password }}"
+      server: "{{ tunnels[item]['f5_api_ip'] }}"
+      user: "{{ bigip_user }}"
+      validate_certs: false
+  with_items: "{{ tunnels }}"
+  delegate_to: localhost
+
+# - name: Add config to a parent block
+#   bigip_imish_config:
+#     lines:
+#       - bgp graceful-restart restart-time 120
+#       - redistribute kernel route-map rhi
+#       # - neighbor 10.10.10.11 remote-as 65000
+#       # - neighbor 10.10.10.11 fall-over bfd
+#       # - neighbor 10.10.10.11 remote-as 65000
+#       # - neighbor 10.10.10.11 fall-over bfd
+#     parents: router bgp 64664
+#     match: exact
+#     provider:
+#       password: "{{ bigip_password }}"
+#       server: "{{ tunnels[item]['f5_api_ip'] }}"
+#       user: "{{ bigip_user }}"
+#       validate_certs: false
+#   delegate_to: localhost

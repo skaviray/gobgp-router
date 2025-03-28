@@ -1,0 +1,195 @@
+tunnels:
+  ## Production
+  # public_tenant1:
+  #   vxlan_tag: 2030
+  #   vxlan_dev: ens1f1
+  #   router_vtep: "10.232.198.178/28"
+  #   f5_member_self_ip: "10.240.27.23"
+  #   f5_member_mac: "14:a9:d0:ac:d2:27"
+  #   f5_vtep_ip: "10.232.198.177/28"
+  #   f5_api_ip: "  "
+  #   router_as: 65533
+  #   f5_as: 65514  
+  # public_tenant2:
+  #   vxlan_tag: 2031
+  #   vxlan_dev: ens1f1
+  #   router_vtep: "10.232.198.194/28"
+  #   f5_member_self_ip: "10.240.27.24"
+  #   f5_member_mac: "14:a9:d0:ac:cc:27"
+  #   f5_vtep_ip: "10.232.198.193/28"
+  #   f5_api_ip: "10.240.25.52"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # public_tenant3:
+  #   vxlan_tag: 2032
+  #   vxlan_dev: ens1f1
+  #   router_vtep: "10.232.198.114/28"
+  #   f5_member_self_ip: "10.240.27.36"
+  #   f5_member_mac: "14:a9:d0:ac:db:2b"
+  #   f5_vtep_ip: "10.232.198.113/28"
+  #   f5_api_ip: "10.240.25.57"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # public_tenant4:
+  #   vxlan_tag: 2033
+  #   vxlan_dev: ens1f1
+  #   router_vtep: "10.232.198.130/28"
+  #   f5_member_self_ip: "10.240.27.37"
+  #   f5_member_mac: "14:a9:d0:ac:d1:27"
+  #   f5_vtep_ip: "10.232.198.129/28"
+  #   f5_api_ip: "10.240.25.58"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # public_tenant5:
+  #   vxlan_tag: 2038
+  #   vxlan_dev: ens1f1
+  #   router_vtep: "10.232.198.146/28"
+  #   f5_member_self_ip: "10.240.27.40"
+  #   f5_member_mac: "14:a9:d0:ac:cb:27"
+  #   f5_vtep_ip: "10.232.198.145/28"
+  #   f5_api_ip: "10.240.25.59"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # private_tenant1:
+  #   vxlan_tag: 2034
+  #   vxlan_dev: ens1f1
+  #   router_vtep: "10.232.198.82/28"
+  #   f5_member_self_ip: "10.240.27.31"
+  #   f5_member_mac: "14:a9:d0:ac:db:29"
+  #   f5_vtep_ip: "10.232.198.81/28"
+  #   f5_api_ip: "10.240.25.55"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # private_tenant2:
+  #   vxlan_tag: 2035
+  #   vxlan_dev: ens1f1
+  #   router_vtep: "10.232.198.98/28"
+  #   f5_member_self_ip: "10.240.27.32"
+  #   f5_member_mac: "14:a9:d0:ac:d1:2b"
+  #   f5_vtep_ip: "10.232.198.97/28"
+  #   f5_api_ip: "10.240.25.56"
+  #   router_as: 65533
+  #   f5_as: 65514
+  ## Staging
+  # private_tenant1:
+  #   vxlan_tag: 2042
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.98/28"
+  #   router_ip: "10.232.80.168"
+  #   router_mac: "6c:92:cf:5a:c9:70"
+  #   f5_member_self_ip: "10.240.27.31"
+  #   f5_member_mac: "14:a9:d0:ac:db:29"
+  #   f5_vtep_ip: "10.240.200.97/28"
+  #   f5_api_ip: "10.240.25.55"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # private_tenant2:
+  #   vxlan_tag: 2043
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.114/28"
+  #   router_ip: "10.232.80.168"
+  #   router_mac: "6c:92:cf:5a:c9:70"
+  #   f5_member_self_ip: "10.240.27.32"
+  #   f5_member_mac: "14:a9:d0:ac:d1:2b"
+  #   f5_vtep_ip: "10.240.200.113/28"
+  #   f5_api_ip: "10.240.25.56"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # public_tenant1:
+  #   vxlan_tag: 2044
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.2/28"
+  #   f5_member_self_ip: "10.240.27.23"
+  #   f5_member_mac: "14:a9:d0:ac:d2:27"
+  #   f5_vtep_ip: "10.240.200.1/28"
+  #   f5_api_ip: "10.240.25.51"
+  #   router_as: 65533
+  #   f5_as: 65514  
+  # public_tenant2:
+  #   vxlan_tag: 2045
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.18/28"
+  #   f5_member_self_ip: "10.240.27.24"
+  #   f5_member_mac: "14:a9:d0:ac:cc:27"
+  #   f5_vtep_ip: "10.240.200.17/28"
+  #   f5_api_ip: "10.240.25.52"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # public_tenant3:
+  #   vxlan_tag: 2046
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.34/28"
+  #   f5_member_self_ip: "10.240.27.36"
+  #   f5_member_mac: "14:a9:d0:ac:db:2b"
+  #   f5_vtep_ip: "10.240.200.33/28"
+  #   f5_api_ip: "10.240.25.57"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # public_tenant4:
+  #   vxlan_tag: 2047
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.50/28"
+  #   f5_member_self_ip: "10.240.27.37"
+  #   f5_member_mac: "14:a9:d0:ac:d1:27"
+  #   f5_vtep_ip: "10.240.200.49/28"
+  #   f5_api_ip: "10.240.25.58"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # public_tenant5:
+  #   vxlan_tag: 2048
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.66/28"
+  #   f5_member_self_ip: "10.240.27.40"
+  #   f5_member_mac: "14:a9:d0:ac:cb:27"
+  #   f5_vtep_ip: "10.240.200.65/28"
+  #   f5_api_ip: "10.240.25.59"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # dev_tenant1:
+  #   vxlan_tag: 2049
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.129/28"
+  #   f5_member_self_ip: "10.240.27.27"
+  #   f5_member_mac: "14:a9:d0:ac:db:27"
+  #   f5_vtep_ip: "10.240.200.130/28"
+  #   f5_api_ip: "10.240.25.53"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # dev_tenant2:
+  #   vxlan_tag: 2050
+  #   vxlan_dev: ens1f0np0
+  #   router_vtep: "10.240.200.146/28"
+  #   f5_member_self_ip: "10.240.27.28"
+  #   f5_member_mac: "14:a9:d0:ac:d1:29"
+  #   f5_vtep_ip: "10.240.200.145/28"
+  #   f5_api_ip: "10.240.25.54"
+  #   router_as: 65533
+  #   f5_as: 65514
+  # Acceptance
+  dev_tenant1:
+    vxlan_tag: 2051
+    vxlan_dev: ens1f0np0
+    router_vtep: "10.240.200.162/28"
+    f5_member_self_ip: "10.240.27.27"
+    f5_member_mac: "14:a9:d0:ac:db:27"
+    f5_vtep_ip: "10.240.200.161/28"
+    f5_api_ip: "10.240.25.53"
+    router_as: 65533
+    f5_as: 65514
+  dev_tenant2:
+    vxlan_tag: 2052
+    vxlan_dev: ens1f0np0
+    router_vtep: "10.240.200.178/28"
+    f5_member_self_ip: "10.240.27.28"
+    f5_member_mac: "14:a9:d0:ac:d1:29"
+    f5_vtep_ip: "10.240.200.177/28"
+    f5_api_ip: "10.240.25.54"
+    router_as: 65533
+    f5_as: 65514
+
+# gobgp global rib -a ipv4 add 10.215.0.0/16
+# gobgp global rib -a ipv4 add 10.218.0.0/16
+# gobgp global rib -a ipv4 add 10.233.0.0/24
+# gobgp global rib -a ipv4 add 10.8.0.0/24
+# gobgp global rib -a ipv4 add 10.0.1.0/24
+# gobgp global rib -a ipv4 add 10.0.0.0/24

@@ -1,0 +1,7 @@
+# vxlan_tag: 2044
+# vxlan_dev: ens1f1
+# local_ip: "10.240.198.12"
+# vxlan_ip: "10.232.198.66/28"
+# f5_member_self_ip: "10.240.27.28"
+# f5_member_mac: "14:a9:d0:ac:d1:29"
+# f5_vxlan_ip: "10.232.198.65"

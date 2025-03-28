@@ -1,0 +1,32 @@
+- name: Stopping the vxlan service for vxlan{{ tunnels[item]['vxlan_tag'] }}
+  systemd_service:
+    name: "vxlan{{ tunnels[item]['vxlan_tag'] }}"
+    state: stopped
+    enabled: false
+  with_items: "{{ tunnels }}"
+
+- name: Deleting the vxlan creation scripts
+  file:
+    state: "absent"
+    path: "/usr/local/bin/vxlan{{ tunnels[item]['vxlan_tag'] }}-create.sh"
+    mode: 744
+  with_items: "{{ tunnels }}"
+
+- name: Deleting the vxlan removal scripts
+  file:
+    state: "absent"
+    path: "/usr/local/bin/vxlan{{ tunnels[item]['vxlan_tag']  }}-remove.sh"
+    mode: 744
+  with_items: "{{ tunnels }}"
+
+- name: Deleting the vxlan startup scripts
+  file:
+    state: "absent"
+    path: "/etc/systemd/system/vxlan{{ tunnels[item]['vxlan_tag'] }}.service"
+    mode: 744
+  with_items: "{{ tunnels }}"
+
+  # with_items:
+    # - "vxlan{{ vxlan_tag }}-create.sh"
+    # - "vxlan{{ vxlan_tag }}-remove.sh"
+    # - "/etc/systemd/system/vxlan{{ vxlan_tag }}.service"

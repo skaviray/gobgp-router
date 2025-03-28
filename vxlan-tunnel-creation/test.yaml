@@ -1,0 +1,6 @@
+- hosts: prod-routers
+  tasks:
+    - debug: msg="{{ tunnels[item] }}"
+      with_items: "{{ tunnels }}"
+    - debug: msg="{{ ansible_facts[tunnels[item]['vxlan_dev']]['ipv4']['address'] }}"
+      with_items: "{{ tunnels }}"

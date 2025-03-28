@@ -1,0 +1,2 @@
+- {import_tasks: create.yaml, when: action == 'create'}
+- {import_tasks: remove.yaml, when: action == 'delete'}

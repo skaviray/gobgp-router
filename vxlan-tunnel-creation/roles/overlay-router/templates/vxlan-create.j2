@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Add VXLAN interface
+ip link add vxlan{{ tunnels[item]['vxlan_tag'] }} type vxlan id {{ tunnels[item]['vxlan_tag'] }} dev {{ tunnels[item]['vxlan_dev'] }}  local {{ ansible_facts[tunnels[item]['vxlan_dev']]['ipv4']['address'] }} dstport 4789
+
+# Assign IP address
+ip addr add {{ tunnels[item]['router_vtep'] }} dev  vxlan{{ tunnels[item]['vxlan_tag'] }}
+
+# Bring up the interface
+ip link set vxlan{{ tunnels[item]['vxlan_tag'] }} up
+
+# Add mac in the bridge fdb
+# bridge fdb add <f5-member-interface-mac> dev vxlan2036 dst <f5-member-self-ip>
+bridge fdb add {{ tunnels[item]['f5_member_mac'] }} dev vxlan{{ tunnels[item]['vxlan_tag'] }} dst {{ tunnels[item]['f5_member_self_ip'] }}
+
+
+# Add the nighbor
+# ip neigh add <f5-vtep-ip> lladdr <f5-member-interface-mac> dev vxlan2036
+ip neigh add {{ tunnels[item]['f5_vtep_ip'].split('/')[0]   }} lladdr {{ tunnels[item]['f5_member_mac'] }} dev vxlan{{ tunnels[item]['vxlan_tag'] }}

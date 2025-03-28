@@ -1,0 +1,5 @@
+# bigip_host: 10.240.26.32
+bigip_user: "admin"
+bigip_password: "Krutrim@123"
+partition: common
+tunnel_name: ansible_vxlan_tunnel

@@ -1,0 +1,29 @@
+- name: Creating the vxlan creation script for vxlan{{ tunnels[item]['vxlan_tag'] }}
+  template:
+    src: "vxlan-create.j2"
+    dest: "/usr/local/bin/vxlan{{ tunnels[item]['vxlan_tag'] }}-create.sh"
+    mode: 744
+  with_items: "{{ tunnels }}"
+
+- name: Creating the vxlan removal script for vxlan{{ tunnels[item]['vxlan_tag'] }}
+  template:
+    src: "vxlan-remove.j2"
+    dest: "/usr/local/bin/vxlan{{ tunnels[item]['vxlan_tag'] }}-remove.sh" 
+    mode: 744
+  with_items: "{{ tunnels }}"
+
+- name: Creating the vxlan start up script for vxlan{{ vxlan_tag }}
+  template:
+    src: "vxlan-service.j2"
+    dest: "/etc/systemd/system/vxlan{{ tunnels[item]['vxlan_tag'] }}.service"
+    mode: 744
+  with_items: "{{ tunnels }}"
+
+
+- name: Starting the vxlan service for vxlan{{ vxlan_tag }}
+  systemd_service:
+    name: "vxlan{{ tunnels[item]['vxlan_tag'] }}"
+    daemon_reload: true
+    state: started
+    enabled: true
+  with_items: "{{ tunnels }}"

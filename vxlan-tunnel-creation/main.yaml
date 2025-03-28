@@ -1,0 +1,11 @@
+- hosts: prod-routers
+  become: true
+  roles:
+    - overlay-router
+
+  
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - f5

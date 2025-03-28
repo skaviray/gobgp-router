@@ -1,0 +1,3 @@
+#!/bin/bash
+# Delete the vlan interface
+ip link del vxlan{{ tunnels[item]['vxlan_tag'] }}

@@ -1,0 +1,25 @@
+- name: Create Self IP
+  bigip_selfip:
+    state: absent
+    name: "vxlan_tunnel_{{ tunnels[item]['vxlan_tag'] }}_self_ip"
+    provider:
+      password: "{{ bigip_password }}"
+      server: "{{ tunnels[item]['f5_api_ip'] }}"
+      user: "{{ bigip_user }}"
+      validate_certs: false
+  with_items: "{{ tunnels }}"
+  delegate_to: localhost
+  
+- name: Add a static route in {{ bigip_host }} f5-tenant
+  bigip_tunnel:
+    name: "vxlan_tunnel_{{ tunnels[item]['vxlan_tag'] }}"
+    state: absent
+    provider:
+      password: "{{ bigip_password }}"
+      server: "{{ tunnels[item]['f5_api_ip'] }}"
+      user: "{{ bigip_user }}"
+      validate_certs: false
+  with_items: "{{ tunnels }}"
+  delegate_to: localhost
+
+
